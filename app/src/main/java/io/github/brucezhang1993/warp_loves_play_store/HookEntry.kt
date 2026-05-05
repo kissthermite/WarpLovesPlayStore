@@ -10,6 +10,13 @@ import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 
 @InjectYukiHookWithXposed
 object HookEntry : IYukiHookXposedInit {
+
+    private val allowedPackages = setOf(
+        "com.android.vending",
+        "com.google.android.apps.photos",
+        "com.google.android.youtube"
+    )
+
     override fun onInit() = configs {
         isDebug = BuildConfig.DEBUG
     }
@@ -23,7 +30,7 @@ object HookEntry : IYukiHookXposedInit {
             }.hook {
                 before {
                     val param1 = args().first().string();
-                    if ("com.android.vending" == param1) {
+                    if (param1 in allowedPackages) {
                         result = instanceOrNull
                         return@before
                     }
