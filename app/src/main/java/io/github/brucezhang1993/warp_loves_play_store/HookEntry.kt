@@ -5,41 +5,17 @@ import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
 import com.highcapable.yukihookapi.hook.factory.configs
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.StringClass
-import com.highcapable.yukihookapi.hook.type.java.StringType
 import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 
 @InjectYukiHookWithXposed
 object HookEntry : IYukiHookXposedInit {
-
-    private val allowedPackages = setOf(
-        "com.android.vending",
-        "com.google.android.apps.photos",
-        "com.google.android.youtube"
-    )
-
-    override fun onInit() = configs {
-        isDebug = BuildConfig.DEBUG
-    }
-
+    private val allowed = setOf("com.android.vending","com.google.android.apps.photos","com.google.android.youtube")
+    override fun onInit() = configs { isDebug = BuildConfig.DEBUG }
     override fun onHook() = YukiHookAPI.encase {
-        listOf(
-            "com.cloudflare.onedotonedotonedotone",
-            "com.cloudflare.cloudflareoneagent"
-        ).forEach { appPackage ->
-            loadApp(appPackage) {
-                "android.net.VpnService\$Builder".toClass().method {
-                    name = "addDisallowedApplication"
-                    param(StringClass)
-                    returnType = "android.net.VpnService\$Builder".toClass()
-                }.hook {
-                    before {
-                        val param1 = args().first().string();
-                        if (param1 in allowedPackages) {
-                            result = instanceOrNull
-                            return@before
-                        }
-                        result = callOriginal()
-                    }
+        listOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent").forEach { pkg ->
+            loadApp(pkg) {
+                "android.net.VpnService\$Builder".toClass().method { name = "addDisallowedApplication"; param(StringClass); returnType = "android.net.VpnService\$Builder".toClass() }.hook {
+                    before { val p = args().first().string(); if (p in allowed) { result = instanceOrNull; return@before }; result = callOriginal() }
                 }
             }
         }
