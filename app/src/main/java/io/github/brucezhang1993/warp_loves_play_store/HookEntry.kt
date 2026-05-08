@@ -14,9 +14,7 @@ object HookEntry : IYukiHookXposedInit {
     override fun onHook() = YukiHookAPI.encase {
         listOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent").forEach { pkg ->
             loadApp(pkg) {
-                "android.net.VpnService\$Builder".toClass().method { name = "addDisallowedApplication"; param(StringClass); returnType = "android.net.VpnService\$Builder".toClass() }.hook {
-                    before { val p = args().first().string(); if (p in allowed) { result = instanceOrNull; return@before }; result = callOriginal() }
-                }
+                "android.net.VpnService\$Builder".toClass().method { name = "addDisallowedApplication"; param(StringClass); returnType = "android.net.VpnService\$Builder".toClass() }.hook { before { val p = args().first().string(); if (p in allowed) { result = instanceOrNull; return@before }; result = callOriginal() } }
             }
         }
     }
