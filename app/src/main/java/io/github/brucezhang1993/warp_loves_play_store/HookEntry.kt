@@ -12,7 +12,7 @@ object HookEntry : IYukiHookXposedInit {
     private val excluded = setOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent")
     override fun onInit() = configs { isDebug = BuildConfig.DEBUG }
     override fun onHook() = YukiHookAPI.encase {
-        listOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent").forEach { pkg ->
+        excluded.forEach { pkg ->
             loadApp(pkg) {
                 "android.net.VpnService\$Builder".toClass().method { name = "addDisallowedApplication"; param(StringClass); returnType = "android.net.VpnService\$Builder".toClass() }.hook { before { val p = args().first().string(); if (p !in excluded) { result = instanceOrNull; return@before }; result = callOriginal() } }
             }
