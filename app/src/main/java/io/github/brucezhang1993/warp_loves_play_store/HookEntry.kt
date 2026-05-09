@@ -9,7 +9,7 @@ import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 
 @InjectYukiHookWithXposed
 object HookEntry : IYukiHookXposedInit {
-    private val allowed = setOf("com.android.vending","com.google.android.apps.photos","com.google.android.youtube")
+    private val allowed = setOf("com.android.vending","com.google.android.gms","com.google.android.youtube","com.google.android.apps.photos")
     override fun onInit() = configs { isDebug = BuildConfig.DEBUG }
     override fun onHook() = YukiHookAPI.encase {
         listOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent").forEach { pkg ->
