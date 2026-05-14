@@ -9,7 +9,7 @@ import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 
 @InjectYukiHookWithXposed
 object HookEntry : IYukiHookXposedInit {
-    private val excluded = setOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent")
+    private val excluded = setOf("com.cloudflare.onedotonedotonedotone","com.cloudflare.cloudflareoneagent","com.wireguard.android")
     override fun onInit() = configs { isDebug = BuildConfig.DEBUG }
     override fun onHook() = YukiHookAPI.encase {
         excluded.forEach { pkg ->
